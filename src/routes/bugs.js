@@ -107,4 +107,45 @@ router.patch('/:id/review', verifyToken, requireRole('staff'), async (req,res,ne
         next(err);
     }
 });
+
+router.get('/active', verifyToken, requireRole('developer'), async (req,res,next) => {
+    try{
+        const stmt = db.prepare(`SELECT * FROM bug_reports WHERE status = 'investigating'`);
+        const bugs = stmt.all();
+        res.status(200).json({
+            data: bugs
+        });
+    }catch (err){
+        next(err);
+    }
+});
+
+router.patch('/:id/squash', verifyToken, requireRole('developer'), async (req,res,next) =>{
+    try {
+        const bugId = req.params.id;
+        // First make sure the bug is currently under investigation.
+        const checkStmt = db.prepare(`SELECT * FROM bug_reports WHERE id = ?`);
+        const bugCheck = checkStmt.get(bugId);
+        if (!bugCheck){
+            return res.status(404).json({
+                error: 'Bug not found!'
+            });
+        }
+        if (bugCheck.status !== "investigating"){
+            return res.status(409).json({
+                error: 'Cannot squash a bug not under investigation.'
+            });
+        }
+        const patchStmt = db.prepare(`UPDATE bug_reports SET status = ?, updated_at = datetime(\'now\') WHERE id = ?`);
+        patchStmt.run('squashed', bugId);
+        res.status(200).json({
+            data: {
+                message: 'Bug Report Updated!',
+                bugId
+            }
+        });
+    } catch (err){
+        next(err);
+    }
+});
 module.exports = router;
