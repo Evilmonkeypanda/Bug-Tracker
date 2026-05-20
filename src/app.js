@@ -8,9 +8,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// TODO: Add these route files later
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bugs', require('./routes/bugs'));
+app.use('/api/bugs/:id/notes', require('./routes/notes'));
 
 // Catch any errors that happen to pop up.
 app.use((err, req, res, next) => {
