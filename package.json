@@ -1,0 +1,24 @@
+{
+  "name": "bugtracker",
+  "version": "0.0.1",
+  "description": "Initial Implementation",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "init-db": "node -e \"const db = require('./src/db/db'); const fs = require('fs'); const sql = fs.readFileSync('./src/db/schema.sql', 'utf8'); db.exec(sql); console.log('Database initialized successfully!');\""
+  },
+  "author": "Dan",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.10.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
