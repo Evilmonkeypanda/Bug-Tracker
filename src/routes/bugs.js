@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const db = require('../db/db');
 const verifyToken = require('../middleware/auth');
 const requireRole = require('../middleware/requireRole');
+const requireSD = require('../middleware/requireSD');
 
 const router = express.Router();
 
@@ -148,4 +149,6 @@ router.patch('/:id/squash', verifyToken, requireRole('developer'), async (req,re
         next(err);
     }
 });
+
+router.get('')
 module.exports = router;
