@@ -150,5 +150,23 @@ router.patch('/:id/squash', verifyToken, requireRole('developer'), async (req,re
     }
 });
 
-router.get('')
+router.get('/:id', verifyToken, requireSD, async(req,res,next) => {
+    try{
+        const bugId = req.params.id;
+        const checkBug = db.prepare('SELECT * FROM bug_reports WHERE id = ?');
+        const bug = checkBug.get(bugId);
+        if (!bug){
+            return res.status(404).json({
+                error: 'Bug Report not found.'
+            });
+        }
+        const bugNotes = db.prepare('SELECT * FROM dev_notes WHERE bug_report_id = ?');
+        const notes = bugNotes.all(bugId);
+        return res.status(200).json({
+            data: { ...bug, notes: notes}
+        });
+    } catch (err){
+        next(err);
+    }
+});
 module.exports = router;
